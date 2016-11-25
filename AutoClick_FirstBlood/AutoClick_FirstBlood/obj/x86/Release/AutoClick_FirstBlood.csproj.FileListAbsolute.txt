@@ -1,0 +1,10 @@
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\bin\Release\AutoClick_FirstBlood.exe.config
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\bin\Release\AutoClick_FirstBlood.exe
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\bin\Release\AutoClick_FirstBlood.pdb
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\obj\x86\Release\AutoClick_FirstBlood.Form1.resources
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\obj\x86\Release\AutoClick_FirstBlood.Properties.Resources.resources
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\obj\x86\Release\AutoClick_FirstBlood.exe
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\obj\x86\Release\AutoClick_FirstBlood.pdb
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\obj\x86\Release\AutoClick_FirstBlood.HelpForm.resources
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\obj\x86\Release\AutoClick_FirstBlood.csproj.GenerateResource.Cache
+D:\Nho\C#\AutoClick_FirstBlood\AutoClick_FirstBlood\obj\x86\Release\AutoClick_FirstBlood.csprojResolveAssemblyReference.cache
