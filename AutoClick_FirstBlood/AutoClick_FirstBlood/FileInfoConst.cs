@@ -34,7 +34,12 @@ namespace AutoClick_FirstBlood
             "..\\..\\img\\17.png",
             "..\\..\\img\\18.png",
             "..\\..\\img\\19.png",
-            "..\\..\\img\\20.png"
+            "..\\..\\img\\20.png",
+            "..\\..\\img\\21.png",
+            "..\\..\\img\\22.png",
+            "..\\..\\img\\23.png",
+            "..\\..\\img\\24.png",
+            "..\\..\\img\\25.png"
         });
 #else
         public static string imgRecognizExeFile = "testOpencv1.exe";
@@ -53,7 +58,15 @@ namespace AutoClick_FirstBlood
             "img\\10.png",
             "img\\11.png",
             "img\\12.png",
-            "img\\13.png"
+            "img\\13.png",
+            "img\\14.png",
+            "img\\15.png",
+            "img\\16.png",
+            "img\\17.png",
+            "img\\18.png",
+            "img\\19.png",
+            "img\\20.png"
+
         });
 #endif
     }

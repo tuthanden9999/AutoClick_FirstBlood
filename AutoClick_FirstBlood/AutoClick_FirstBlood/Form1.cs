@@ -381,6 +381,7 @@ namespace AutoClick_FirstBlood
             if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) == false)
             {
                 currentImgIndex++;
+                repeatCycleIndex = 0;
             }
             else
             {
@@ -394,7 +395,7 @@ namespace AutoClick_FirstBlood
             if (repeatCycleIndex > 30)
             {
                 repeatCycleIndex = 0;
-                currentImgIndex = FileInfoConst.imgSubScreenList.Count - 1;
+                currentImgIndex = 0;
             }
             repeatCycleIndex++;
         }
@@ -624,7 +625,10 @@ namespace AutoClick_FirstBlood
 
         private void RunAutoForImg()
         {
-            pickPosCheckbox.Checked = true;
+            if (pickPosCheckbox.InvokeRequired)
+            {
+                pickPosCheckbox.Invoke(new MethodInvoker(delegate { pickPosCheckbox.Checked = true; }));
+            }
             isPick = true;
             CaptureScreen(Screen.PrimaryScreen, FileInfoConst.imgScreenFile);
             ClearPositions();
