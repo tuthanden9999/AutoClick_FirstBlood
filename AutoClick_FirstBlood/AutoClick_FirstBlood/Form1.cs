@@ -75,7 +75,6 @@ namespace AutoClick_FirstBlood
         private int currentImgIndex;
         private bool isRepeatImgClicked;
         private int repeatCycleIndex;
-        private List<int> repeatImgIndexList;
         private System.Timers.Timer aTimer;
         private Keys startKey = Keys.F4;
         private Keys recordKey = Keys.F3;
@@ -107,7 +106,6 @@ namespace AutoClick_FirstBlood
             currentImgIndex = 0;
             repeatCycleIndex = 0;
             isRepeatImgClicked = false;
-            repeatImgIndexList = new List<int>();
             posList = new List<Point>();
             configFile = "config.txt";
             ReadConfigFile();
@@ -246,8 +244,6 @@ namespace AutoClick_FirstBlood
                         break;
                     case 4:
                         isAutoByImg = true;
-                        repeatImgIndexList.Clear();
-                        repeatImgIndexList.Add(5);
                         //RecodeImgPosition();
                         break;
                     default:
@@ -351,13 +347,23 @@ namespace AutoClick_FirstBlood
             {
                 currentImgIndex = 0;
             }
+            while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
+                   !File.Exists(FileInfoConst.imgScreenFile) ||
+                   !File.Exists(FileInfoConst.imgSubScreenList[currentImgIndex]))
+            {
+                currentImgIndex++;
+                if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
+                {
+                    currentImgIndex = 0;
+                }
+            }
             Point imgPos = new Point(0, 0);
             LaunchCommandLineApp(currentImgIndex);
             System.Threading.Thread.Sleep(500);
             imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
             if (imgPos.X < 0 || imgPos.Y < 0)
             {
-                if (repeatImgIndexList.Contains(currentImgIndex) && isRepeatImgClicked)
+                if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) && isRepeatImgClicked)
                 {
                     currentImgIndex++;
                     isRepeatImgClicked = false;
@@ -372,7 +378,7 @@ namespace AutoClick_FirstBlood
                 }));
             }
             posList.Add(imgPos);
-            if (repeatImgIndexList.Contains(currentImgIndex) == false)
+            if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) == false)
             {
                 currentImgIndex++;
             }
@@ -385,7 +391,7 @@ namespace AutoClick_FirstBlood
 
         public void repeatCycleIfNecessary()
         {
-            if (repeatCycleIndex > 40)
+            if (repeatCycleIndex > 30)
             {
                 repeatCycleIndex = 0;
                 currentImgIndex = FileInfoConst.imgSubScreenList.Count - 1;
@@ -610,6 +616,7 @@ namespace AutoClick_FirstBlood
                     using (Graphics gScreen = Graphics.FromImage(bmp))
                         gScreen.CopyFromScreen(s_rect.Location, Point.Empty, s_rect.Size);
                     bmp.Save(file, System.Drawing.Imaging.ImageFormat.Png);
+                    System.Threading.Thread.Sleep(500);
                 }
             }
             catch (Exception) { /*TODO: Any exception handling.*/ }

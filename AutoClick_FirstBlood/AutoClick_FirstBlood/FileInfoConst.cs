@@ -7,6 +7,9 @@ namespace AutoClick_FirstBlood
 {
     class FileInfoConst
     {
+        public static List<int> repeatImgIndexList = new List<int>(new int[]{
+            5
+        });
 #if DEBUG
         public static string imgRecognizExeFile = "..\\..\\testOpencv1.exe";
         public static string imgScreenFile = "..\\..\\img\\screen.png";
@@ -24,7 +27,14 @@ namespace AutoClick_FirstBlood
             "..\\..\\img\\10.png",
             "..\\..\\img\\11.png",
             "..\\..\\img\\12.png",
-            "..\\..\\img\\13.png"
+            "..\\..\\img\\13.png",
+            "..\\..\\img\\14.png",
+            "..\\..\\img\\15.png",
+            "..\\..\\img\\16.png",
+            "..\\..\\img\\17.png",
+            "..\\..\\img\\18.png",
+            "..\\..\\img\\19.png",
+            "..\\..\\img\\20.png"
         });
 #else
         public static string imgRecognizExeFile = "testOpencv1.exe";
