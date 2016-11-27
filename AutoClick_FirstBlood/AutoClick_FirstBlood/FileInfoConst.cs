@@ -13,7 +13,7 @@ namespace AutoClick_FirstBlood
 #if DEBUG
         public static string imgRecognizExeFile = "..\\..\\testOpencv1.exe";
         public static string imgScreenFile = "..\\..\\img\\screen.png";
-        public static string imgPosFile = "..\\..\\img\\imgPosition.txt";
+        public static string imgPosFile = "..\\..\\img\\imgPos.txt";
         public static List<string> imgSubScreenList = new List<string>(new string[]{
             "..\\..\\img\\1.png",
             "..\\..\\img\\2.png",
@@ -65,8 +65,12 @@ namespace AutoClick_FirstBlood
             "img\\17.png",
             "img\\18.png",
             "img\\19.png",
-            "img\\20.png"
-
+            "img\\20.png",
+            "img\\21.png",
+            "img\\22.png",
+            "img\\23.png",
+            "img\\24.png",
+            "img\\25.png"
         });
 #endif
     }

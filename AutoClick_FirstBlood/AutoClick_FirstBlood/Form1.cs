@@ -346,6 +346,7 @@ namespace AutoClick_FirstBlood
             if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
             {
                 currentImgIndex = 0;
+                isRepeatImgClicked = false;
             }
             while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
                    !File.Exists(FileInfoConst.imgScreenFile) ||
@@ -355,6 +356,7 @@ namespace AutoClick_FirstBlood
                 if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
                 {
                     currentImgIndex = 0;
+                    isRepeatImgClicked = false;
                 }
             }
             Point imgPos = new Point(0, 0);
