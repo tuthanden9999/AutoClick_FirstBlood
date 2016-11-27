@@ -1,16 +1,33 @@
 #include "opencv2/core/core.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include <opencv2/highgui/highgui.hpp>
-//#include <Windows.h>
+#include <windows.h>
 #include <iostream>
 #include <string>
+#include <sstream>
+#include <vector>
 #include <fstream>
 
 using namespace std;
 using namespace cv;
 
+void split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss;
+    ss.str(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+}
 
-void findImgInScreenCapture(int &centerX, int &centerY, char *inputName, char *templName){
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}
+
+void findImgInScreenCapture(int &centerX, int &centerY, const char *inputName, const char *templName){
 	IplImage *ipl_img   = cvLoadImage(inputName, 1);
 	IplImage *ipl_templ = cvLoadImage( templName, 1 );
 
@@ -47,14 +64,17 @@ void findImgInScreenCapture(int &centerX, int &centerY, char *inputName, char *t
     //waitKey(0);
 }
 
-int main(int argc, char* argv[]){
-	if(argc < 4){
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow)
+{
+	nCmdShow = 0;
+	std::vector<std::string> args = split(lpCmdLine, ' ');
+	if(args.size() < 3){
 		return -1;
 	}
 	int x, y;
-	findImgInScreenCapture(x, y, argv[1], argv[2]);
+	findImgInScreenCapture(x, y, args.at(0).data(), args.at(1).data());
 
-    std::ofstream out(argv[3]);
+    std::ofstream out(args.at(2).data());
     out << x << "\n" << y;
     out.close();
 
