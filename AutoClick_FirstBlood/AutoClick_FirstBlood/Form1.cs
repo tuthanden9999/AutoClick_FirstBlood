@@ -398,6 +398,7 @@ namespace AutoClick_FirstBlood
             {
                 repeatCycleIndex = 0;
                 currentImgIndex = 0;
+                isRepeatImgClicked = false;
             }
             repeatCycleIndex++;
         }
