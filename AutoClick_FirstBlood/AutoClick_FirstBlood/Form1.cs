@@ -93,6 +93,7 @@ namespace AutoClick_FirstBlood
             RegisterHotKey(this.Handle, 3, 0, recordKey.GetHashCode());
             RegisterHotKey(this.Handle, 4, 0, imgKey.GetHashCode());
 
+            FileInfoConst.initImgSubScreenList();
             isStopClick = true;
             mins = 0;
             seconds = 2;
