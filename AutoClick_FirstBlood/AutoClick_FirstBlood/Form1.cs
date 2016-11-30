@@ -82,6 +82,7 @@ namespace AutoClick_FirstBlood
         private List<Point> posList;
 
         private string configFile;
+        private string resultFile;
         #endregion Properties
 
         #region Events
@@ -109,6 +110,7 @@ namespace AutoClick_FirstBlood
             isRepeatImgClicked = false;
             posList = new List<Point>();
             configFile = "config.txt";
+            resultFile = "result.txt";
             ReadConfigFile();
             SetConfigToUI();
             aTimer = new System.Timers.Timer();
@@ -342,12 +344,33 @@ namespace AutoClick_FirstBlood
             posList.Add(curPos);
         }
 
+        public void WriteResult(bool result)
+        {
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(resultFile, true))
+                {
+                    if (result)
+                    {
+                        sw.WriteLine(DateTime.Now + " :: success");
+                    }
+                    else
+                    {
+                        sw.WriteLine(DateTime.Now + " :: failure");
+                    }
+                    sw.Close();
+                }
+            }
+            catch { }
+        }
+
         public void RecodeImgPosition()
         {
             if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
             {
                 currentImgIndex = 0;
                 isRepeatImgClicked = false;
+                WriteResult(true);
             }
             while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
                    !File.Exists(FileInfoConst.imgScreenFile) ||
@@ -358,6 +381,7 @@ namespace AutoClick_FirstBlood
                 {
                     currentImgIndex = 0;
                     isRepeatImgClicked = false;
+                    WriteResult(true);
                 }
             }
             Point imgPos = new Point(0, 0);
@@ -400,6 +424,7 @@ namespace AutoClick_FirstBlood
                 repeatCycleIndex = 0;
                 currentImgIndex = 0;
                 isRepeatImgClicked = false;
+                WriteResult(false);
             }
             repeatCycleIndex++;
         }
