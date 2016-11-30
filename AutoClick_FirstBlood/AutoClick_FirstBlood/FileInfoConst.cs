@@ -7,7 +7,7 @@ namespace AutoClick_FirstBlood
 {
     class FileInfoConst
     {
-        public static int imgSubScreenCount = 120;
+        public static int imgSubScreenCount = 150;
         public static List<string> imgSubScreenList = new List<string>();
         public static List<int> repeatImgIndexList = new List<int>(new int[]{
             5
