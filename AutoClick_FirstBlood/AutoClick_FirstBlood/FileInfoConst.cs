@@ -19,7 +19,7 @@ namespace AutoClick_FirstBlood
         public static void initImgSubScreenList()
         {
             imgSubScreenList.Clear();
-            for (int i = 0; i < imgSubScreenCount; i++)
+            for (int i = 1; i <= imgSubScreenCount; i++)
             {
                 imgSubScreenList.Add("..\\..\\img\\" + i + ".png");
             }
@@ -32,7 +32,7 @@ namespace AutoClick_FirstBlood
         public static void initImgSubScreenList()
         {
             imgSubScreenList.Clear();
-            for (int i = 0; i < imgSubScreenCount; i++)
+            for (int i = 1; i <= imgSubScreenCount; i++)
             {
                 imgSubScreenList.Add("img\\" + i + ".png");
             }
