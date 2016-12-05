@@ -75,6 +75,7 @@ namespace AutoClick_FirstBlood
         private int currentImgIndex;
         private bool isRepeatImgClicked;
         private int repeatCycleIndex;
+        private int timeoutClickCount;
         private System.Timers.Timer aTimer;
         private Keys startKey = Keys.F4;
         private Keys recordKey = Keys.F3;
@@ -107,6 +108,7 @@ namespace AutoClick_FirstBlood
             isAutoByImg = false;
             currentImgIndex = 0;
             repeatCycleIndex = 0;
+            timeoutClickCount = 30;
             isRepeatImgClicked = false;
             posList = new List<Point>();
             configFile = "config.txt";
@@ -384,6 +386,14 @@ namespace AutoClick_FirstBlood
                     WriteResult(true);
                 }
             }
+            if (currentImgIndex == FileInfoConst.downloadImgIndex)
+            {
+                timeoutClickCount = 60;
+            }
+            else
+            {
+                timeoutClickCount = 30;
+            }
             Point imgPos = new Point(0, 0);
             LaunchCommandLineApp(currentImgIndex);
             System.Threading.Thread.Sleep(500);
@@ -409,6 +419,10 @@ namespace AutoClick_FirstBlood
             {
                 currentImgIndex++;
                 repeatCycleIndex = 0;
+                //while (FileInfoConst.canIgnoreImgIndexList.Contains(currentImgIndex))
+                //{
+                //    currentImgIndex++;
+                //}
             }
             else
             {
@@ -419,8 +433,16 @@ namespace AutoClick_FirstBlood
 
         public void repeatCycleIfNecessary()
         {
-            if (repeatCycleIndex > 30)
+            if (repeatCycleIndex > timeoutClickCount)
             {
+                if (currentImgIndex == FileInfoConst.downloadImgIndex)
+                {
+                    Point imgPos = new Point(0, 0);
+                    LaunchCommandLineApp(FileInfoConst.cancelDownloadImg);
+                    System.Threading.Thread.Sleep(500);
+                    imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
+                    posList.Add(imgPos);
+                }
                 repeatCycleIndex = 0;
                 currentImgIndex = 0;
                 isRepeatImgClicked = false;
@@ -435,6 +457,28 @@ namespace AutoClick_FirstBlood
             proc.StartInfo.FileName = FileInfoConst.imgRecognizExeFile;
             proc.StartInfo.Arguments = " " + FileInfoConst.imgScreenFile +
                                        " " + FileInfoConst.imgSubScreenList[imgIndex] + 
+                                       " " + FileInfoConst.imgPosFile;
+            proc.StartInfo.RedirectStandardOutput = true;
+            proc.StartInfo.RedirectStandardError = true;
+            proc.StartInfo.UseShellExecute = false;
+            proc.StartInfo.CreateNoWindow = true;
+            try
+            {
+                proc.Start();
+                proc.WaitForExit();
+            }
+            catch
+            {
+                // Log error.
+            }
+        }
+
+        public void LaunchCommandLineApp(string subScreenImg)
+        {
+            Process proc = new Process();
+            proc.StartInfo.FileName = FileInfoConst.imgRecognizExeFile;
+            proc.StartInfo.Arguments = " " + FileInfoConst.imgScreenFile +
+                                       " " + subScreenImg +
                                        " " + FileInfoConst.imgPosFile;
             proc.StartInfo.RedirectStandardOutput = true;
             proc.StartInfo.RedirectStandardError = true;
