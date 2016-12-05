@@ -409,7 +409,7 @@ namespace AutoClick_FirstBlood
                 if (detectIgnoreImgCount >= 3)
                 {
                     detectIgnoreImgCount = 0;
-                    currentImgIndex += 7;
+                    currentImgIndex += FileInfoConst.canIgnoreImgIndexList[1] - FileInfoConst.canIgnoreImgIndexList[0];
                 }
                 if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) && isRepeatImgClicked)
                 {

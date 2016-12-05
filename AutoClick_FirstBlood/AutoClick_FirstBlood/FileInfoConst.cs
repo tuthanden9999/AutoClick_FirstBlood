@@ -15,9 +15,9 @@ namespace AutoClick_FirstBlood
         });
         public static List<int> canIgnoreImgIndexList = new List<int>(new int[] {
             6,
-            13,
-            20,
-            27
+            14,
+            22,
+            30
         });
 #if DEBUG
         public static string imgRecognizExeFile = "..\\..\\testOpencv1.exe";
