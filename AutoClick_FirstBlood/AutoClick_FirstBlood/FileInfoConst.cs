@@ -13,12 +13,12 @@ namespace AutoClick_FirstBlood
         public static List<int> repeatImgIndexList = new List<int>(new int[] {
             5
         });
-        //public static List<int> canIgnoreImgIndexList = new List<int>(new int[] {
-        //    6,
-        //    7,
-        //    8,
-        //    9
-        //});
+        public static List<int> canIgnoreImgIndexList = new List<int>(new int[] {
+            6,
+            13,
+            20,
+            27
+        });
 #if DEBUG
         public static string imgRecognizExeFile = "..\\..\\testOpencv1.exe";
         public static string imgScreenFile = "..\\..\\img\\screen.png";

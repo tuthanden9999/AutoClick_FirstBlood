@@ -76,6 +76,7 @@ namespace AutoClick_FirstBlood
         private bool isRepeatImgClicked;
         private int repeatCycleIndex;
         private int timeoutClickCount;
+        private int detectIgnoreImgCount;
         private System.Timers.Timer aTimer;
         private Keys startKey = Keys.F4;
         private Keys recordKey = Keys.F3;
@@ -108,6 +109,7 @@ namespace AutoClick_FirstBlood
             isAutoByImg = false;
             currentImgIndex = 0;
             repeatCycleIndex = 0;
+            detectIgnoreImgCount = 0;
             timeoutClickCount = 30;
             isRepeatImgClicked = false;
             posList = new List<Point>();
@@ -400,6 +402,15 @@ namespace AutoClick_FirstBlood
             imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
             if (imgPos.X < 0 || imgPos.Y < 0)
             {
+                if (FileInfoConst.canIgnoreImgIndexList.Contains(currentImgIndex))
+                {
+                    detectIgnoreImgCount++;
+                }
+                if (detectIgnoreImgCount >= 3)
+                {
+                    detectIgnoreImgCount = 0;
+                    currentImgIndex += 7;
+                }
                 if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) && isRepeatImgClicked)
                 {
                     currentImgIndex++;
@@ -419,10 +430,6 @@ namespace AutoClick_FirstBlood
             {
                 currentImgIndex++;
                 repeatCycleIndex = 0;
-                //while (FileInfoConst.canIgnoreImgIndexList.Contains(currentImgIndex))
-                //{
-                //    currentImgIndex++;
-                //}
             }
             else
             {
