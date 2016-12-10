@@ -462,6 +462,10 @@ namespace AutoClick_FirstBlood
                 {
                     currentImgIndex = 12;
                 }
+                else
+                {
+                    noIncomeTurnIndex = 0;
+                }
             }
             while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
                    !File.Exists(FileInfoConst.imgScreenFile) ||
@@ -478,6 +482,10 @@ namespace AutoClick_FirstBlood
                     if (noIncomeTurnIndex < FileInfoConst.noIncomeTurnCount)
                     {
                         currentImgIndex = 12;
+                    }
+                    else
+                    {
+                        noIncomeTurnIndex = 0;
                     }
                 }
             }
