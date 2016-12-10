@@ -388,7 +388,7 @@ namespace AutoClick_FirstBlood
                     WriteResult(true);
                 }
             }
-            if (currentImgIndex == FileInfoConst.downloadImgIndex)
+            if (FileInfoConst.downloadImgIndex.Contains(currentImgIndex))
             {
                 timeoutClickCount = 60;
             }
@@ -442,7 +442,7 @@ namespace AutoClick_FirstBlood
         {
             if (repeatCycleIndex > timeoutClickCount)
             {
-                if (currentImgIndex == FileInfoConst.downloadImgIndex)
+                if (FileInfoConst.downloadImgIndex.Contains(currentImgIndex))
                 {
                     Point imgPos = new Point(0, 0);
                     LaunchCommandLineApp(FileInfoConst.cancelDownloadImg);
