@@ -370,27 +370,11 @@ namespace AutoClick_FirstBlood
 
         public void RecodeImgPosition()
         {
-            if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
-            {
-                currentImgIndex = 0;
-                isRepeatImgClicked = false;
-                WriteResult(true);
-            }
-            while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
-                   !File.Exists(FileInfoConst.imgScreenFile) ||
-                   !File.Exists(FileInfoConst.imgSubScreenList[currentImgIndex]))
-            {
-                currentImgIndex++;
-                if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
-                {
-                    currentImgIndex = 0;
-                    isRepeatImgClicked = false;
-                    WriteResult(true);
-                }
-            }
+            CheckFinishARound();
             if (FileInfoConst.downloadImgIndex.Contains(currentImgIndex))
             {
                 timeoutClickCount = 60;
+                //for no income: currentImgIndex += 2;
             }
             else
             {
@@ -418,6 +402,10 @@ namespace AutoClick_FirstBlood
                 }
                 repeatCycleIfNecessary();
                 return;
+            }
+            if (FileInfoConst.canIgnoreImgIndexList.Contains(currentImgIndex))
+            {
+                detectIgnoreImgCount = 0;
             }
             if (posListTextbox.InvokeRequired)
             {
@@ -456,6 +444,28 @@ namespace AutoClick_FirstBlood
                 WriteResult(false);
             }
             repeatCycleIndex++;
+        }
+
+        public void CheckFinishARound()
+        {
+            if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
+            {
+                currentImgIndex = 0;
+                isRepeatImgClicked = false;
+                WriteResult(true);
+            }
+            while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
+                   !File.Exists(FileInfoConst.imgScreenFile) ||
+                   !File.Exists(FileInfoConst.imgSubScreenList[currentImgIndex]))
+            {
+                currentImgIndex++;
+                if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
+                {
+                    currentImgIndex = 0;
+                    isRepeatImgClicked = false;
+                    WriteResult(true);
+                }
+            }
         }
 
         public void LaunchCommandLineApp(int imgIndex)
