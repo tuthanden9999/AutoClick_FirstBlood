@@ -8,7 +8,9 @@ namespace AutoClick_FirstBlood
     class FileInfoConst
     {
         public static int imgSubScreenCount = 150;
-        ////for no income: public static int noIncomeTurnCount = 10;
+        ////for no income: 
+        public static int noIncomeTurnCount = 10;
+
         public static List<int> downloadImgIndex = new List<int>(new int[] {
             10,
             18,

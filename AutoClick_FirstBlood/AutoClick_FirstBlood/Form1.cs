@@ -77,6 +77,7 @@ namespace AutoClick_FirstBlood
         private int repeatCycleIndex;
         private int timeoutClickCount;
         private int detectIgnoreImgCount;
+        private int noIncomeTurnIndex;
         private System.Timers.Timer aTimer;
         private Keys startKey = Keys.F4;
         private Keys recordKey = Keys.F3;
@@ -110,6 +111,7 @@ namespace AutoClick_FirstBlood
             currentImgIndex = 0;
             repeatCycleIndex = 0;
             detectIgnoreImgCount = 0;
+            noIncomeTurnIndex = 0;
             timeoutClickCount = 30;
             isRepeatImgClicked = false;
             posList = new List<Point>();
@@ -374,7 +376,8 @@ namespace AutoClick_FirstBlood
             if (FileInfoConst.downloadImgIndex.Contains(currentImgIndex))
             {
                 timeoutClickCount = 60;
-                //for no income: currentImgIndex += 2;
+                //for no income: 
+                currentImgIndex += 2;
             }
             else
             {
@@ -453,6 +456,12 @@ namespace AutoClick_FirstBlood
                 currentImgIndex = 0;
                 isRepeatImgClicked = false;
                 WriteResult(true);
+                //for no income
+                noIncomeTurnIndex++;
+                if (noIncomeTurnIndex < FileInfoConst.noIncomeTurnCount)
+                {
+                    currentImgIndex = 12;
+                }
             }
             while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
                    !File.Exists(FileInfoConst.imgScreenFile) ||
@@ -464,6 +473,12 @@ namespace AutoClick_FirstBlood
                     currentImgIndex = 0;
                     isRepeatImgClicked = false;
                     WriteResult(true);
+                    //for no income
+                    noIncomeTurnIndex++;
+                    if (noIncomeTurnIndex < FileInfoConst.noIncomeTurnCount)
+                    {
+                        currentImgIndex = 12;
+                    }
                 }
             }
         }
