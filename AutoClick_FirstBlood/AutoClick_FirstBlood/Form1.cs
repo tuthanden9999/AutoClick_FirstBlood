@@ -370,16 +370,15 @@ namespace AutoClick_FirstBlood
 
         public void RecodeImgPosition()
         {
-            CheckFinishARound();
             if (FileInfoConst.downloadImgIndex.Contains(currentImgIndex))
             {
                 timeoutClickCount = 60;
-                //for no income: currentImgIndex += 2;
             }
             else
             {
                 timeoutClickCount = 30;
             }
+            CheckFinishARound();
             Point imgPos = new Point(0, 0);
             LaunchCommandLineApp(currentImgIndex);
             System.Threading.Thread.Sleep(500);
