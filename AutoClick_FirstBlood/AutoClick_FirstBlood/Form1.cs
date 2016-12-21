@@ -75,6 +75,7 @@ namespace AutoClick_FirstBlood
         private int currentImgIndex;
         private bool isRepeatImgClicked;
         private int repeatCycleIndex;
+        private int loopIndex;
         private int timeoutClickCount;
         private int detectIgnoreImgCount;
         private System.Timers.Timer aTimer;
@@ -109,12 +110,14 @@ namespace AutoClick_FirstBlood
             isAutoByImg = false;
             currentImgIndex = 0;
             repeatCycleIndex = 0;
+            loopIndex = 0;
             detectIgnoreImgCount = 0;
             timeoutClickCount = 30;
             isRepeatImgClicked = false;
             posList = new List<Point>();
             configFile = "config.txt";
             resultFile = "result.txt";
+            FileInfoConst.ReadConfigFileForImg();
             ReadConfigFile();
             SetConfigToUI();
             aTimer = new System.Timers.Timer();
@@ -370,7 +373,7 @@ namespace AutoClick_FirstBlood
 
         public void RecodeImgPosition()
         {
-            if (FileInfoConst.downloadImgIndex.Contains(currentImgIndex))
+            if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
             {
                 timeoutClickCount = 60;
             }
@@ -378,6 +381,11 @@ namespace AutoClick_FirstBlood
             {
                 timeoutClickCount = 30;
             }
+            if (loopIndex > 0 && FileInfoConst.ignoreWhenLoopImgIndexList.Contains(currentImgIndex))
+            {
+                currentImgIndex++;
+            }
+            CheckFinishALoop();
             CheckFinishARound();
             Point imgPos = new Point(0, 0);
             LaunchCommandLineApp(currentImgIndex);
@@ -385,14 +393,15 @@ namespace AutoClick_FirstBlood
             imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
             if (imgPos.X < 0 || imgPos.Y < 0)
             {
-                if (FileInfoConst.canIgnoreImgIndexList.Contains(currentImgIndex))
+                int jumpTupleIndex = getTupleIndexWithCurrentIndex(FileInfoConst.jumpIndexList, currentImgIndex);
+                if (jumpTupleIndex != -1)
                 {
                     detectIgnoreImgCount++;
-                }
-                if (detectIgnoreImgCount >= 3)
-                {
-                    detectIgnoreImgCount = 0;
-                    currentImgIndex += FileInfoConst.canIgnoreImgIndexList[1] - FileInfoConst.canIgnoreImgIndexList[0];
+                    if (detectIgnoreImgCount >= FileInfoConst.jumpIndexList[jumpTupleIndex].Item3)
+                    {
+                        detectIgnoreImgCount = 0;
+                        currentImgIndex = FileInfoConst.jumpIndexList[jumpTupleIndex].Item2;
+                    }
                 }
                 if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) && isRepeatImgClicked)
                 {
@@ -402,7 +411,7 @@ namespace AutoClick_FirstBlood
                 repeatCycleIfNecessary();
                 return;
             }
-            if (FileInfoConst.canIgnoreImgIndexList.Contains(currentImgIndex))
+            if (getTupleIndexWithCurrentIndex(FileInfoConst.jumpIndexList, currentImgIndex) != -1)
             {
                 detectIgnoreImgCount = 0;
             }
@@ -425,11 +434,20 @@ namespace AutoClick_FirstBlood
             }
         }
 
+        public void ResetARound()
+        {
+            currentImgIndex = 0;
+            repeatCycleIndex = 0;
+            isRepeatImgClicked = false;
+            loopIndex = 0;
+            detectIgnoreImgCount = 0;
+        }
+
         public void repeatCycleIfNecessary()
         {
             if (repeatCycleIndex > timeoutClickCount)
             {
-                if (FileInfoConst.downloadImgIndex.Contains(currentImgIndex))
+                if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
                 {
                     Point imgPos = new Point(0, 0);
                     LaunchCommandLineApp(FileInfoConst.cancelDownloadImg);
@@ -437,20 +455,32 @@ namespace AutoClick_FirstBlood
                     imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
                     posList.Add(imgPos);
                 }
-                repeatCycleIndex = 0;
-                currentImgIndex = 0;
-                isRepeatImgClicked = false;
+                ResetARound();
                 WriteResult(false);
             }
             repeatCycleIndex++;
+        }
+
+        public void CheckFinishALoop()
+        {
+            if (currentImgIndex == FileInfoConst.endLoopIndex)
+            {
+                currentImgIndex = FileInfoConst.startLoopIndex;
+                isRepeatImgClicked = false;
+                loopIndex++;
+            }
+            if (loopIndex >= FileInfoConst.loopCount)
+            {
+                ResetARound();
+                return;
+            }
         }
 
         public void CheckFinishARound()
         {
             if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
             {
-                currentImgIndex = 0;
-                isRepeatImgClicked = false;
+                ResetARound();
                 WriteResult(true);
             }
             while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
@@ -460,8 +490,7 @@ namespace AutoClick_FirstBlood
                 currentImgIndex++;
                 if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
                 {
-                    currentImgIndex = 0;
-                    isRepeatImgClicked = false;
+                    ResetARound();
                     WriteResult(true);
                 }
             }
@@ -509,6 +538,18 @@ namespace AutoClick_FirstBlood
             {
                 // Log error.
             }
+        }
+
+        public int getTupleIndexWithCurrentIndex(List<Tuple<int, int, int>> tupleList, int index)
+        {
+            for (int i = 0; i < tupleList.Count; i++)
+            {
+                if (tupleList[i].Item1 == index)
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         public void ClearPositions()

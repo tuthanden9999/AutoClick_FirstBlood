@@ -1,0 +1,17 @@
+imgSubScreenCount = 150
+startLoopIndex = 4
+endLoopIndex = 19
+loopCount = 3
+jumpIndexList =
+9, 10, 5
+10, 16, 5
+11, 12, 1
+12, 13, 1
+longTimeImgIndexList =
+7
+14
+repeatImgIndexList = 
+5
+6
+ignoreWhenLoopImgIndexList =
+5
