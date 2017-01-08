@@ -19,6 +19,9 @@ namespace AutoClick_FirstBlood
         public static List<int> longTimeImgIndexList = new List<int>();
         public static List<int> repeatImgIndexList = new List<int>();
         public static List<int> ignoreWhenLoopImgIndexList = new List<int>();
+        public static Dictionary<int, string> textAfterIndexList = new Dictionary<int, string>();
+        public static string usernameDefault = "";
+        public static string passwordDefault = "";
 
         enum IndexList
         {
@@ -26,7 +29,8 @@ namespace AutoClick_FirstBlood
             JUMP_INDEX_LIST,
             LONG_TIME_IMG_INDEX_LIST,
             REPEAT_IMG_INDEX_LIST,
-            IGNORE_WHEN_LOOP_IMG_INDEX_LIST
+            IGNORE_WHEN_LOOP_IMG_INDEX_LIST,
+            TEXT_AFTER_INDEX_LIST
         }
 
         public static void LoadDefault()
@@ -114,6 +118,12 @@ namespace AutoClick_FirstBlood
                         continue;
                     }
 
+                    if (line.Contains("textAfterIndexList ="))
+                    {
+                        indexListId = IndexList.TEXT_AFTER_INDEX_LIST;
+                        continue;
+                    }
+
                     switch (indexListId)
                     {
                         case IndexList.JUMP_INDEX_LIST:
@@ -132,6 +142,14 @@ namespace AutoClick_FirstBlood
                         case IndexList.IGNORE_WHEN_LOOP_IMG_INDEX_LIST:
                             ignoreWhenLoopImgIndexList.Add(Int32.Parse(line));
                             break;
+                        case IndexList.TEXT_AFTER_INDEX_LIST:
+                            string[] tmpArr2 = Regex.Split(line, ",");
+                            int afterIndex = Int32.Parse(tmpArr2[0]);
+                            string textAfterIndex = tmpArr2[1].Trim();
+                            if (textAfterIndex.Contains("username : ")) usernameDefault = textAfterIndex;
+                            if (textAfterIndex.Contains("password : ")) passwordDefault = textAfterIndex;
+                            textAfterIndexList.Add(afterIndex, textAfterIndex);
+                            break;
                         default:
                             break;
                     }
@@ -144,7 +162,49 @@ namespace AutoClick_FirstBlood
             }
         }
 
+        public static void WriteConfigFileForImg()
+        {
+            try
+            {
+                using (StreamWriter sw = new StreamWriter(FileInfoConst.configFileImg, false))
+                {
+                    sw.WriteLine("imgSubScreenCount = " + imgSubScreenCount);
+                    sw.WriteLine("startLoopIndex = " + startLoopIndex);
+                    sw.WriteLine("endLoopIndex = " + endLoopIndex);
+                    sw.WriteLine("loopCount = " + loopCount);
+                    sw.WriteLine("jumpIndexList = ");
+                    for (int i = 0; i < jumpIndexList.Count; i++)
+                    {
+                        sw.WriteLine(jumpIndexList[i].Item1 + ", " + jumpIndexList[i].Item2 + ", " + jumpIndexList[i].Item3);
+                    }
+                    sw.WriteLine("longTimeImgIndexList = ");
+                    for (int i = 0; i < longTimeImgIndexList.Count; i++)
+                    {
+                        sw.WriteLine(longTimeImgIndexList[i]);
+                    }
+                    sw.WriteLine("repeatImgIndexList = ");
+                    for (int i = 0; i < repeatImgIndexList.Count; i++)
+                    {
+                        sw.WriteLine(repeatImgIndexList[i]);
+                    }
+                    sw.WriteLine("ignoreWhenLoopImgIndexList = ");
+                    for (int i = 0; i < ignoreWhenLoopImgIndexList.Count; i++)
+                    {
+                        sw.WriteLine(ignoreWhenLoopImgIndexList[i]);
+                    }
+                    sw.WriteLine("textAfterIndexList = ");
+                    for (int i = 0; i < textAfterIndexList.Count; i++)
+                    {
+                        sw.WriteLine(textAfterIndexList.Keys.ElementAt(i) + ", " + textAfterIndexList.Values.ElementAt(i) );
+                    }
+                    sw.Close();
+                }
+            }
+            catch { }
+        }
+
 #if DEBUG
+        public static string mailListFile = "..\\..\\mailList.txt";
         public static string configFileImg = "..\\..\\config_img.txt";
         public static string imgRecognizExeFile = "..\\..\\testOpencv1.exe";
         public static string imgScreenFile = "..\\..\\img\\screen.png";
@@ -160,6 +220,7 @@ namespace AutoClick_FirstBlood
         }
         
 #else
+        public static string mailListFile = "mailList.txt";
         public static string configFileImg = "config_img.txt";
         public static string imgRecognizExeFile = "testOpencv1.exe";
         public static string imgScreenFile = "img\\screen.png";

@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Linq;
 
 namespace AutoClick_FirstBlood
 {
@@ -373,6 +374,12 @@ namespace AutoClick_FirstBlood
 
         public void RecodeImgPosition()
         {
+            if(FileInfoConst.textAfterIndexList.ContainsKey(currentImgIndex))
+            {
+                SendTextToUI(FileInfoConst.textAfterIndexList[currentImgIndex]);
+                currentImgIndex++;
+                return;
+            }
             if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
             {
                 timeoutClickCount = 60;
@@ -393,7 +400,7 @@ namespace AutoClick_FirstBlood
             imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
             if (imgPos.X < 0 || imgPos.Y < 0)
             {
-                int jumpTupleIndex = getTupleIndexWithCurrentIndex(FileInfoConst.jumpIndexList, currentImgIndex);
+                int jumpTupleIndex = GetTupleIndexWithCurrentIndex(FileInfoConst.jumpIndexList, currentImgIndex);
                 if (jumpTupleIndex != -1)
                 {
                     detectIgnoreImgCount++;
@@ -411,7 +418,7 @@ namespace AutoClick_FirstBlood
                 repeatCycleIfNecessary();
                 return;
             }
-            if (getTupleIndexWithCurrentIndex(FileInfoConst.jumpIndexList, currentImgIndex) != -1)
+            if (GetTupleIndexWithCurrentIndex(FileInfoConst.jumpIndexList, currentImgIndex) != -1)
             {
                 detectIgnoreImgCount = 0;
             }
@@ -441,6 +448,7 @@ namespace AutoClick_FirstBlood
             isRepeatImgClicked = false;
             loopIndex = 0;
             detectIgnoreImgCount = 0;
+            GetNextGmail(FileInfoConst.usernameDefault, FileInfoConst.passwordDefault);
         }
 
         public void repeatCycleIfNecessary()
@@ -456,7 +464,7 @@ namespace AutoClick_FirstBlood
                     posList.Add(imgPos);
                 }
                 ResetARound();
-                WriteResult(false);
+                //WriteResult(false);
             }
             repeatCycleIndex++;
         }
@@ -481,7 +489,7 @@ namespace AutoClick_FirstBlood
             if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
             {
                 ResetARound();
-                WriteResult(true);
+                //WriteResult(true);
             }
             while (!File.Exists(FileInfoConst.imgRecognizExeFile) ||
                    !File.Exists(FileInfoConst.imgScreenFile) ||
@@ -491,7 +499,7 @@ namespace AutoClick_FirstBlood
                 if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
                 {
                     ResetARound();
-                    WriteResult(true);
+                    //WriteResult(true);
                 }
             }
         }
@@ -540,7 +548,7 @@ namespace AutoClick_FirstBlood
             }
         }
 
-        public int getTupleIndexWithCurrentIndex(List<Tuple<int, int, int>> tupleList, int index)
+        public int GetTupleIndexWithCurrentIndex(List<Tuple<int, int, int>> tupleList, int index)
         {
             for (int i = 0; i < tupleList.Count; i++)
             {
@@ -550,6 +558,71 @@ namespace AutoClick_FirstBlood
                 }
             }
             return -1;
+        }
+
+        public void SendTextToUI(string text)
+        {
+            try
+            {
+                Invoke((Action)(() => 
+                {
+                    string[] partsText = Regex.Split(text, " : ");
+                    if (partsText.Length > 1)
+                    {
+                        Clipboard.SetText(partsText[1]);
+                        System.Threading.Thread.Sleep(500);
+                        SendKeys.SendWait("^{v}");
+                        SendKeys.SendWait("~");
+                    }
+                    else
+                    {
+                        Clipboard.SetText(text);
+                        System.Threading.Thread.Sleep(500);
+                        SendKeys.SendWait("^{v}");
+                        SendKeys.SendWait("~");
+                    }
+                }));
+            }
+            catch
+            { }
+        }
+
+        public void GetNextGmail(string username, string password)
+        {
+            if (!File.Exists(FileInfoConst.mailListFile))
+            {
+                return;
+            }
+            try
+            {
+                string line;
+                StreamReader sr = new StreamReader(FileInfoConst.mailListFile);
+                while ((line = sr.ReadLine()) != null)
+                {
+                    if (line.Contains(username))
+                    {
+                        line = sr.ReadLine();
+                        line = sr.ReadLine();
+                        if (line.Trim() == "" || line == null) return;
+                        string userNew = line;
+                        int afterIndexUser = FileInfoConst.textAfterIndexList.FirstOrDefault(x => x.Value == username).Key;
+                        FileInfoConst.textAfterIndexList[afterIndexUser] = userNew;
+                        FileInfoConst.usernameDefault = userNew;
+                        line = sr.ReadLine();
+                        string passNew = line;
+                        int afterIndexPass = FileInfoConst.textAfterIndexList.FirstOrDefault(x => x.Value == password).Key;
+                        FileInfoConst.textAfterIndexList[afterIndexPass] = passNew;
+                        FileInfoConst.passwordDefault = passNew;
+                        FileInfoConst.WriteConfigFileForImg();
+                        break;
+                    }
+                }
+                sr.Close();
+            }
+            catch
+            {
+                
+            }
         }
 
         public void ClearPositions()
