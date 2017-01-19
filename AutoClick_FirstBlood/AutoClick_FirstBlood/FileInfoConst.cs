@@ -20,6 +20,7 @@ namespace AutoClick_FirstBlood
         public static List<int> repeatImgIndexList = new List<int>();
         public static List<int> ignoreWhenLoopImgIndexList = new List<int>();
         public static Dictionary<int, string> textAfterIndexList = new Dictionary<int, string>();
+        public static List<int> endDragIndexList = new List<int>();
         public static string usernameDefault = "";
         public static string passwordDefault = "";
 
@@ -30,7 +31,8 @@ namespace AutoClick_FirstBlood
             LONG_TIME_IMG_INDEX_LIST,
             REPEAT_IMG_INDEX_LIST,
             IGNORE_WHEN_LOOP_IMG_INDEX_LIST,
-            TEXT_AFTER_INDEX_LIST
+            TEXT_AFTER_INDEX_LIST,
+            END_DRAG_INDEX_LIST
         }
 
         public static void LoadDefault()
@@ -124,6 +126,12 @@ namespace AutoClick_FirstBlood
                         continue;
                     }
 
+                    if (line.Contains("endDragIndexList ="))
+                    {
+                        indexListId = IndexList.END_DRAG_INDEX_LIST;
+                        continue;
+                    }
+
                     switch (indexListId)
                     {
                         case IndexList.JUMP_INDEX_LIST:
@@ -149,6 +157,9 @@ namespace AutoClick_FirstBlood
                             if (textAfterIndex.Contains("username : ")) usernameDefault = textAfterIndex;
                             if (textAfterIndex.Contains("password : ")) passwordDefault = textAfterIndex;
                             textAfterIndexList.Add(afterIndex, textAfterIndex);
+                            break;
+                        case IndexList.END_DRAG_INDEX_LIST:
+                            endDragIndexList.Add(Int32.Parse(line));
                             break;
                         default:
                             break;
@@ -196,6 +207,11 @@ namespace AutoClick_FirstBlood
                     for (int i = 0; i < textAfterIndexList.Count; i++)
                     {
                         sw.WriteLine(textAfterIndexList.Keys.ElementAt(i) + ", " + textAfterIndexList.Values.ElementAt(i) );
+                    }
+                    sw.WriteLine("endDragIndexList = ");
+                    for (int i = 0; i < endDragIndexList.Count; i++)
+                    {
+                        sw.WriteLine(endDragIndexList[i]);
                     }
                     sw.Close();
                 }

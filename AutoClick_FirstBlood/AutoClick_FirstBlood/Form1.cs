@@ -66,6 +66,7 @@ namespace AutoClick_FirstBlood
         private bool isStopClick;
         private int currentImgIndex;
         private bool isRepeatImgClicked;
+        private bool isEndDragIndex;
         private int repeatCycleIndex;
         private int loopIndex;
         private int timeoutClickCount;
@@ -95,6 +96,7 @@ namespace AutoClick_FirstBlood
             detectIgnoreImgCount = 0;
             timeoutClickCount = 30;
             isRepeatImgClicked = false;
+            //isEndDragIndex = false;
             posList = new List<Point>();
             //resultFile = "result.txt";
             FileInfoConst.ReadConfigFileForImg();
@@ -257,6 +259,15 @@ namespace AutoClick_FirstBlood
                 SendTextToUI(FileInfoConst.textAfterIndexList[currentImgIndex]);
                 currentImgIndex++;
                 return;
+            }
+            if (FileInfoConst.endDragIndexList.Contains(currentImgIndex))
+            {
+                //isEndDragIndex = true;
+            }
+            else
+            {
+                ClearPositions();
+                //isEndDragIndex = false;
             }
             if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
             {
@@ -502,9 +513,16 @@ namespace AutoClick_FirstBlood
             posList.Clear();
         }
 
-        private void DoMouseClick()
+        private void DoLeftMouseDragOrClick()
         {
-            MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
+            if (posList.Count == 2)
+            {
+                MyMouseEventHandle.DoLeftMouseDrag(ref posList);
+            }
+            else
+            {
+                MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
+            }
         }
 
         public Point ReadImgPosFile(string file)
@@ -539,9 +557,8 @@ namespace AutoClick_FirstBlood
         private void RunAutoForImg()
         {
             CaptureScreen(Screen.PrimaryScreen, FileInfoConst.imgScreenFile);
-            ClearPositions();
             RecodeImgPosition();
-            MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
+            DoLeftMouseDragOrClick();
         }
         #endregion Methods
     }

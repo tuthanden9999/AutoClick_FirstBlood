@@ -73,5 +73,13 @@ namespace AutoClick_FirstBlood
                         (uint)X, (uint)Y, 0, 0);
             }
         }
+
+        public static void DoLeftMouseDrag(ref List<Point> posList)
+        {
+            mouse_event(MOUSEEVENTF_LEFTDOWN,
+                        (uint)posList[0].X, (uint)posList[0].Y, 0, 0);
+            mouse_event(MOUSEEVENTF_LEFTUP,
+                        (uint)posList[1].X, (uint)posList[1].Y, 0, 0);
+        }
     }
 }
