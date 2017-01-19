@@ -66,10 +66,12 @@ namespace AutoClick_FirstBlood
         private bool isStopClick;
         private int currentImgIndex;
         private bool isRepeatImgClicked;
-        //private bool isEndDragIndex;
+        private bool isMouseDownIndex;
         private int repeatCycleIndex;
         private int loopIndex;
         private int timeoutClickCount;
+        private int timeoutDragCount;
+        private int dragCount;
         private int detectIgnoreImgCount;
         private System.Timers.Timer aTimer;
         //private Keys startKey = Keys.F4;
@@ -95,8 +97,10 @@ namespace AutoClick_FirstBlood
             loopIndex = 0;
             detectIgnoreImgCount = 0;
             timeoutClickCount = 30;
+            dragCount = 0;
+            timeoutDragCount = 50;
             isRepeatImgClicked = false;
-            //isEndDragIndex = false;
+            isMouseDownIndex = false;
             posList = new List<Point>();
             //resultFile = "result.txt";
             FileInfoConst.ReadConfigFileForImg();
@@ -251,23 +255,11 @@ namespace AutoClick_FirstBlood
 
         public void RecodeImgPosition()
         {
-#if DEBUG
-            //MessageBox.Show(currentImgIndex + "");
-#endif
             if(FileInfoConst.textAfterIndexList.ContainsKey(currentImgIndex))
             {
                 SendTextToUI(FileInfoConst.textAfterIndexList[currentImgIndex]);
                 currentImgIndex++;
                 return;
-            }
-            if (FileInfoConst.endDragIndexList.Contains(currentImgIndex))
-            {
-                //isEndDragIndex = true;
-            }
-            else
-            {
-                ClearPositions();
-                //isEndDragIndex = false;
             }
             if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
             {
@@ -283,6 +275,15 @@ namespace AutoClick_FirstBlood
             }
             CheckFinishALoop();
             CheckFinishARound();
+            if (FileInfoConst.mouseDownIndexList.Contains(currentImgIndex))
+            {
+                isMouseDownIndex = true;
+                dragCount++;
+            }
+            else
+            {
+                isMouseDownIndex = false;
+            }
             Point imgPos = new Point(0, 0);
             LaunchCommandLineApp(currentImgIndex);
             System.Threading.Thread.Sleep(500);
@@ -332,11 +333,12 @@ namespace AutoClick_FirstBlood
             loopIndex = 0;
             detectIgnoreImgCount = 0;
             GetNextGmail(FileInfoConst.usernameDefault, FileInfoConst.passwordDefault);
+            dragCount = 0;
         }
 
         public void repeatCycleIfNecessary()
         {
-            if (repeatCycleIndex > timeoutClickCount)
+            if (repeatCycleIndex > timeoutClickCount || dragCount >= timeoutDragCount)
             {
                 if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
                 {
@@ -513,11 +515,11 @@ namespace AutoClick_FirstBlood
             posList.Clear();
         }
 
-        private void DoLeftMouseDragOrClick()
+        private void DoLeftMouseClick()
         {
-            if (posList.Count == 2)
+            if (isMouseDownIndex)
             {
-                MyMouseEventHandle.DoLeftMouseDrag(ref posList);
+                MyMouseEventHandle.DoLeftMouseDownWithPosition(ref posList);
             }
             else
             {
@@ -557,8 +559,9 @@ namespace AutoClick_FirstBlood
         private void RunAutoForImg()
         {
             CaptureScreen(Screen.PrimaryScreen, FileInfoConst.imgScreenFile);
+            ClearPositions();
             RecodeImgPosition();
-            DoLeftMouseDragOrClick();
+            DoLeftMouseClick();
         }
         #endregion Methods
     }
