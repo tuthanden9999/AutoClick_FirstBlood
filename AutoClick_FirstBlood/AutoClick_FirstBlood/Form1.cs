@@ -66,7 +66,7 @@ namespace AutoClick_FirstBlood
         private bool isStopClick;
         private int currentImgIndex;
         private bool isRepeatImgClicked;
-        private bool isEndDragIndex;
+        //private bool isEndDragIndex;
         private int repeatCycleIndex;
         private int loopIndex;
         private int timeoutClickCount;
