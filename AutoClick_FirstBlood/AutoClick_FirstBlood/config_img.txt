@@ -1,17 +1,27 @@
+clickInterval = 5000
+clickIntervalForRepeat = 15000
+timeoutClickCount = 30
+timeoutClickCountLong = 60
+timeoutDragCount = 50
 imgSubScreenCount = 150
 startLoopIndex = 4
-endLoopIndex = 99
-loopCount = 1
-jumpIndexList = 
-11, 12, 2
+endLoopIndex = 24
+loopCount = 5
+jumpIndexList =
+8, 6, 1
+9, 10, 7
+10, 21, 5
+11, 13, 1
 12, 13, 2
-17, 19, 1
-18, 19, 2
-longTimeImgIndexList = 
-20
+14, 15, 1
+16, 17, 2
+17, 18, 1
+22, 24, 3
+longTimeImgIndexList =
+5
+15
 repeatImgIndexList = 
-ignoreWhenLoopImgIndexList = 
-textAfterIndexList = 
-6, username : tuthanden0000@gmail.com
-7, password : Nho260391
-14, com.hkmedia.avoidobstacles
+23
+ignoreWhenLoopImgIndexList =
+mouseDownIndexList = 
+6

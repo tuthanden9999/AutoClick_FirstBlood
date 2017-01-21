@@ -10,6 +10,11 @@ namespace AutoClick_FirstBlood
     class FileInfoConst
     {
         public static List<string> imgSubScreenList = new List<string>();
+        public static int clickInterval = 5000;
+        public static int clickIntervalForRepeat = 15000;
+        public static int timeoutClickCount = 30;
+        public static int timeoutClickCountLong = 60;
+        public static int timeoutDragCount = 50;
         public static int imgSubScreenCount;
         public static int startLoopIndex;
         public static int endLoopIndex;
@@ -68,6 +73,41 @@ namespace AutoClick_FirstBlood
                 while ((line = sr.ReadLine()) != null)
                 {
                     if (line.Trim() == "") continue;
+                    if (line.Contains("clickInterval ="))
+                    {
+                        string[] tmpArr = Regex.Split(line, "clickInterval =");
+                        clickInterval = Int32.Parse(tmpArr[1]);
+                        continue;
+                    }
+
+                    if (line.Contains("clickIntervalForRepeat ="))
+                    {
+                        string[] tmpArr = Regex.Split(line, "clickIntervalForRepeat =");
+                        clickIntervalForRepeat = Int32.Parse(tmpArr[1]);
+                        continue;
+                    }
+
+                    if (line.Contains("timeoutClickCount ="))
+                    {
+                        string[] tmpArr = Regex.Split(line, "timeoutClickCount =");
+                        timeoutClickCount = Int32.Parse(tmpArr[1]);
+                        continue;
+                    }
+
+                    if (line.Contains("timeoutClickCountLong ="))
+                    {
+                        string[] tmpArr = Regex.Split(line, "timeoutClickCountLong =");
+                        timeoutClickCountLong = Int32.Parse(tmpArr[1]);
+                        continue;
+                    }
+
+                    if (line.Contains("timeoutDragCount ="))
+                    {
+                        string[] tmpArr = Regex.Split(line, "timeoutDragCount =");
+                        timeoutDragCount = Int32.Parse(tmpArr[1]);
+                        continue;
+                    }
+
                     if (line.Contains("imgSubScreenCount ="))
                     {
                         string[] tmpArr = Regex.Split(line, "imgSubScreenCount =");
@@ -179,6 +219,11 @@ namespace AutoClick_FirstBlood
             {
                 using (StreamWriter sw = new StreamWriter(FileInfoConst.configFileImg, false))
                 {
+                    sw.WriteLine("clickInterval = " + clickInterval);
+                    sw.WriteLine("clickIntervalForRepeat = " + clickIntervalForRepeat);
+                    sw.WriteLine("timeoutClickCount = " + timeoutClickCount);
+                    sw.WriteLine("timeoutClickCountLong = " + timeoutClickCountLong);
+                    sw.WriteLine("timeoutDragCount = " + timeoutDragCount);
                     sw.WriteLine("imgSubScreenCount = " + imgSubScreenCount);
                     sw.WriteLine("startLoopIndex = " + startLoopIndex);
                     sw.WriteLine("endLoopIndex = " + endLoopIndex);

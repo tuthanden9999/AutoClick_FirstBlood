@@ -70,7 +70,6 @@ namespace AutoClick_FirstBlood
         private int repeatCycleIndex;
         private int loopIndex;
         private int timeoutClickCount;
-        private int timeoutDragCount;
         private int dragCount;
         private int detectIgnoreImgCount;
         private System.Timers.Timer aTimer;
@@ -96,9 +95,8 @@ namespace AutoClick_FirstBlood
             repeatCycleIndex = 0;
             loopIndex = 0;
             detectIgnoreImgCount = 0;
-            timeoutClickCount = 30;
+            timeoutClickCount = FileInfoConst.timeoutClickCount;
             dragCount = 0;
-            timeoutDragCount = 50;
             isRepeatImgClicked = false;
             isMouseDownIndex = false;
             posList = new List<Point>();
@@ -221,7 +219,7 @@ namespace AutoClick_FirstBlood
             stopButton.Enabled = true;
 
             isStopClick = false;
-            aTimer.Interval = 5000;
+            aTimer.Interval = FileInfoConst.clickInterval;
             aTimer.Enabled = true;
         }
 
@@ -263,11 +261,11 @@ namespace AutoClick_FirstBlood
             }
             if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
             {
-                timeoutClickCount = 60;
+                timeoutClickCount = FileInfoConst.timeoutClickCountLong;
             }
             else
             {
-                timeoutClickCount = 30;
+                timeoutClickCount = FileInfoConst.timeoutClickCount;
             }
             if (loopIndex > 0 && FileInfoConst.ignoreWhenLoopImgIndexList.Contains(currentImgIndex))
             {
@@ -316,11 +314,13 @@ namespace AutoClick_FirstBlood
             if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) == false)
             {
                 currentImgIndex++;
+                aTimer.Interval = FileInfoConst.clickInterval;
                 repeatCycleIndex = 0;
             }
             else
             {
                 isRepeatImgClicked = true;
+                aTimer.Interval = FileInfoConst.clickIntervalForRepeat;
                 repeatCycleIfNecessary();
             }
         }
@@ -338,7 +338,7 @@ namespace AutoClick_FirstBlood
 
         public void repeatCycleIfNecessary()
         {
-            if (repeatCycleIndex > timeoutClickCount || dragCount >= timeoutDragCount)
+            if (repeatCycleIndex > timeoutClickCount || dragCount >= FileInfoConst.timeoutDragCount)
             {
                 if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
                 {
