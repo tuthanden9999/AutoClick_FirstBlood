@@ -11,6 +11,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace AutoClick_FirstBlood
 {
@@ -259,6 +260,13 @@ namespace AutoClick_FirstBlood
                 currentImgIndex++;
                 return;
             }
+            if (currentImgIndex == FileInfoConst.expectedImgListIndex)
+            {
+                aTimer.Stop();
+                currentImgIndex++;
+                CheckExpectedImgList();
+                return;
+            }
             if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
             {
                 timeoutClickCount = FileInfoConst.timeoutClickCountLong;
@@ -334,6 +342,7 @@ namespace AutoClick_FirstBlood
             detectIgnoreImgCount = 0;
             GetNextGmail(FileInfoConst.usernameDefault, FileInfoConst.passwordDefault);
             dragCount = 0;
+            ResetCheckedExpectedImgList();
         }
 
         public void repeatCycleIfNecessary()
@@ -403,7 +412,12 @@ namespace AutoClick_FirstBlood
             try
             {
                 proc.Start();
-                proc.WaitForExit();
+                Process[] pname = Process.GetProcessesByName("testOpencv1");
+                while (pname.Length > 0)
+                {
+                    Thread.Sleep(100);
+                    pname = Process.GetProcessesByName("testOpencv1");
+                }
             }
             catch
             {
@@ -411,10 +425,11 @@ namespace AutoClick_FirstBlood
             }
         }
 
-        public void LaunchCommandLineApp(string subScreenImg)
+        public bool LaunchCommandLineApp(string subScreenImg)
         {
             Process proc = new Process();
             proc.StartInfo.FileName = FileInfoConst.imgRecognizExeFile;
+            if (!File.Exists(FileInfoConst.imgScreenFile) || !File.Exists(subScreenImg)) return false;
             proc.StartInfo.Arguments = " " + FileInfoConst.imgScreenFile +
                                        " " + subScreenImg +
                                        " " + FileInfoConst.imgPosFile;
@@ -425,12 +440,79 @@ namespace AutoClick_FirstBlood
             try
             {
                 proc.Start();
-                proc.WaitForExit();
+                Process[] pname = Process.GetProcessesByName("testOpencv1");
+                while (pname.Length > 0)
+                {
+                    Thread.Sleep(100);
+                    pname = Process.GetProcessesByName("testOpencv1");
+                }
+                return true;
             }
             catch
             {
                 // Log error.
             }
+            return false;
+        }
+
+        public void ResetCheckedExpectedImgList()
+        {
+            for (int i = 0; i < FileInfoConst.checkedExpectedImgList.Count; i++)
+            {
+                FileInfoConst.checkedExpectedImgList[i] = false;
+            }
+        }
+
+        public void CheckAExpectedImg(int expectedImgListIndex, ref List<Point> tempPosList)
+        {
+            Point imgPos = new Point(0, 0);
+            bool runAppResult = false;
+            if (FileInfoConst.checkedExpectedImgList[expectedImgListIndex] == true)
+            {
+                return;
+            }
+#if DEBUG
+            runAppResult = LaunchCommandLineApp("..\\..\\img\\" + FileInfoConst.expectedImgList[expectedImgListIndex]);
+#else
+            runAppResult = LaunchCommandLineApp("img\\" + FileInfoConst.expectedImgList[expectedImgListIndex]);
+#endif
+            imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
+            if (imgPos.X < 0 || imgPos.Y < 0 || runAppResult == false)
+            {
+                return;
+            }
+            else
+            {
+                FileInfoConst.checkedExpectedImgList[expectedImgListIndex] = true;
+                tempPosList.Add(imgPos);
+                return;
+            }
+        }
+
+        public void CheckExpectedImgList()
+        {
+            for (int i = 0; i < FileInfoConst.expectedImgList.Count; i++)
+            {
+                //Thread thread = new Thread(new ParameterizedThreadStart(CheckAExpectedImg));
+                //thread.Start(i);
+                //thread.Join(500);
+                if (posList.Count > 0) break;
+                CheckAExpectedImg(i, ref posList);
+            }
+            if (posList.Count == 0)
+            {
+                int jumpTupleIndex = GetTupleIndexWithCurrentIndex(FileInfoConst.jumpIndexList, currentImgIndex - 1);
+                if (jumpTupleIndex != -1)
+                {
+                    detectIgnoreImgCount++;
+                    if (detectIgnoreImgCount >= FileInfoConst.jumpIndexList[jumpTupleIndex].Item3)
+                    {
+                        detectIgnoreImgCount = 0;
+                        currentImgIndex = FileInfoConst.jumpIndexList[jumpTupleIndex].Item2;
+                    }
+                }
+            }
+            aTimer.Start();
         }
 
         public int GetTupleIndexWithCurrentIndex(List<Tuple<int, int, int>> tupleList, int index)

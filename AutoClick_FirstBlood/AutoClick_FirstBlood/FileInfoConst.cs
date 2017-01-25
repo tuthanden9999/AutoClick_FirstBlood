@@ -26,6 +26,9 @@ namespace AutoClick_FirstBlood
         public static List<int> ignoreWhenLoopImgIndexList = new List<int>();
         public static Dictionary<int, string> textAfterIndexList = new Dictionary<int, string>();
         public static List<int> mouseDownIndexList = new List<int>();
+        public static int expectedImgListIndex;
+        public static List<string> expectedImgList = new List<string>();
+        public static List<bool> checkedExpectedImgList = new List<bool>();
         public static string usernameDefault = "";
         public static string passwordDefault = "";
 
@@ -37,7 +40,8 @@ namespace AutoClick_FirstBlood
             REPEAT_IMG_INDEX_LIST,
             IGNORE_WHEN_LOOP_IMG_INDEX_LIST,
             TEXT_AFTER_INDEX_LIST,
-            MOUSE_DOWN_INDEX_LIST
+            MOUSE_DOWN_INDEX_LIST,
+            EXPECTED_IMG_LIST
         }
 
         public static void LoadDefault()
@@ -172,6 +176,19 @@ namespace AutoClick_FirstBlood
                         continue;
                     }
 
+                    if (line.Contains("expectedImgListIndex ="))
+                    {
+                        string[] tmpArr = Regex.Split(line, "expectedImgListIndex =");
+                        expectedImgListIndex = Int32.Parse(tmpArr[1]);
+                        continue;
+                    }
+
+                    if (line.Contains("expectedImgList ="))
+                    {
+                        indexListId = IndexList.EXPECTED_IMG_LIST;
+                        continue;
+                    }
+
                     switch (indexListId)
                     {
                         case IndexList.JUMP_INDEX_LIST:
@@ -201,11 +218,18 @@ namespace AutoClick_FirstBlood
                         case IndexList.MOUSE_DOWN_INDEX_LIST:
                             mouseDownIndexList.Add(Int32.Parse(line));
                             break;
+                        case IndexList.EXPECTED_IMG_LIST:
+                            expectedImgList.Add(line.Trim());
+                            break;
                         default:
                             break;
                     }
                 }
                 sr.Close();
+                for (int i = 0; i < expectedImgList.Count; i++)
+                {
+                    checkedExpectedImgList.Add(false);
+                }
             }
             catch
             {
@@ -253,10 +277,16 @@ namespace AutoClick_FirstBlood
                     {
                         sw.WriteLine(textAfterIndexList.Keys.ElementAt(i) + ", " + textAfterIndexList.Values.ElementAt(i) );
                     }
-                    sw.WriteLine("endDragIndexList = ");
+                    sw.WriteLine("mouseDownIndexList = ");
                     for (int i = 0; i < mouseDownIndexList.Count; i++)
                     {
                         sw.WriteLine(mouseDownIndexList[i]);
+                    }
+                    sw.WriteLine("expectedImgListIndex = " + expectedImgListIndex);
+                    sw.WriteLine("expectedImgList = ");
+                    for (int i = 0; i < expectedImgList.Count; i++)
+                    {
+                        sw.WriteLine(expectedImgList[i]);
                     }
                     sw.Close();
                 }
