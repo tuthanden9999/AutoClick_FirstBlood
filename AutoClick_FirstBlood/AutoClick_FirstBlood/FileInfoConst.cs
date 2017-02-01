@@ -18,6 +18,7 @@ namespace AutoClick_FirstBlood
         public static int imgSubScreenCount;
         public static int startLoopIndex;
         public static int endLoopIndex;
+        public static int endRoundIndex;
         public static int loopCount;
         public static List<Tuple<int, int, int>> jumpIndexList = new List<Tuple<int,int,int>>();
         ////for no income: public static int noIncomeTurnCount = 10;
@@ -51,6 +52,7 @@ namespace AutoClick_FirstBlood
             imgSubScreenCount = 150;
             startLoopIndex = 4;
             endLoopIndex = 19;
+            endRoundIndex = 2;
             loopCount = 3;
             jumpIndexList.Add(Tuple.Create(9, 10, 5));
             jumpIndexList.Add(Tuple.Create(10, 16, 5));
@@ -132,6 +134,13 @@ namespace AutoClick_FirstBlood
                     {
                         string[] tmpArr = Regex.Split(line, "endLoopIndex =");
                         endLoopIndex = Int32.Parse(tmpArr[1]);
+                        continue;
+                    }
+
+                    if (line.Contains("endRoundIndex ="))
+                    {
+                        string[] tmpArr = Regex.Split(line, "endRoundIndex =");
+                        endRoundIndex = Int32.Parse(tmpArr[1]);
                         continue;
                     }
 
@@ -262,6 +271,7 @@ namespace AutoClick_FirstBlood
                     sw.WriteLine("imgSubScreenCount = " + imgSubScreenCount);
                     sw.WriteLine("startLoopIndex = " + startLoopIndex);
                     sw.WriteLine("endLoopIndex = " + endLoopIndex);
+                    sw.WriteLine("endRoundIndex = " + endRoundIndex);
                     sw.WriteLine("loopCount = " + loopCount);
                     sw.WriteLine("jumpIndexList = ");
                     for (int i = 0; i < jumpIndexList.Count; i++)

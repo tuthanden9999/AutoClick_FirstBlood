@@ -99,5 +99,24 @@ namespace AutoClick_FirstBlood
         {
             mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -120, 0);
         }
+
+        //public static void DoLeftMouseUpAndDownWithPostions(ref List<Point> posList)
+        //{
+        //    foreach (Point pos in posList)
+        //    {
+        //        Cursor.Position = pos;
+        //        int X = Cursor.Position.X;
+        //        int Y = Cursor.Position.Y;
+        //        mouse_event(MOUSEEVENTF_LEFTUP
+        //                | MOUSEEVENTF_LEFTDOWN,
+        //                X, Y, 0, 0);
+        //    }
+        //}
+
+        public static void DoLeftMouseUp()
+        {
+            mouse_event(MOUSEEVENTF_LEFTUP,
+                        Cursor.Position.X, Cursor.Position.Y, 0, 0);
+        }
     }
 }

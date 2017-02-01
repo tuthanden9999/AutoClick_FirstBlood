@@ -334,6 +334,11 @@ namespace AutoClick_FirstBlood
                 detectIgnoreImgCount = 0;
             }
             posList.Add(imgPos);
+            if (currentImgIndex == FileInfoConst.endRoundIndex)
+            {
+                ResetARound();
+                return;
+            }
             if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) == false)
             {
                 currentImgIndex++;
@@ -650,7 +655,14 @@ namespace AutoClick_FirstBlood
                 MyMouseEventHandle.DoWheelDownMove();
                 return;
             }
+            if (isRepeatImgClicked)
+            {
+                MyMouseEventHandle.DoLeftMouseUp();
+                MyMouseEventHandle.DoLeftMouseDownWithPosition(ref posList);
+                return;
+            }
             MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
+            MyMouseEventHandle.DoLeftMouseUp(); // for repeatImgClicked, for DoLeftMouseUpAndDownWithPostions
         }
 
         public Point ReadImgPosFile(string file)
