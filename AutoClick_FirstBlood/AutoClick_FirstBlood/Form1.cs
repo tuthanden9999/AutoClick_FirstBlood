@@ -68,6 +68,7 @@ namespace AutoClick_FirstBlood
         private int currentImgIndex;
         private bool isRepeatImgClicked;
         private bool isMouseDownIndex;
+        private bool isMouseWheelDownIndex;
         private int repeatCycleIndex;
         private int loopIndex;
         private int timeoutClickCount;
@@ -100,6 +101,7 @@ namespace AutoClick_FirstBlood
             dragCount = 0;
             isRepeatImgClicked = false;
             isMouseDownIndex = false;
+            isMouseWheelDownIndex = false;
             posList = new List<Point>();
             //resultFile = "result.txt";
             FileInfoConst.ReadConfigFileForImg();
@@ -254,6 +256,11 @@ namespace AutoClick_FirstBlood
 
         public void RecodeImgPosition()
         {
+            CheckFinishALoop();
+            CheckFinishARound();
+            SetTimerClickInterval();
+            isMouseWheelDownIndex = false;
+            isMouseDownIndex = false;
             if(FileInfoConst.textAfterIndexList.ContainsKey(currentImgIndex))
             {
                 SendTextToUI(FileInfoConst.textAfterIndexList[currentImgIndex]);
@@ -265,7 +272,18 @@ namespace AutoClick_FirstBlood
                 aTimer.Stop();
                 currentImgIndex++;
                 CheckExpectedImgList();
+                aTimer.Start();
                 return;
+            }
+            if (FileInfoConst.mouseWheelDownIndexList.Contains(currentImgIndex))
+            {
+                isMouseWheelDownIndex = true;
+                currentImgIndex++;
+                return;
+            }
+            else
+            {
+                isMouseWheelDownIndex = false;
             }
             if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
             {
@@ -279,12 +297,9 @@ namespace AutoClick_FirstBlood
             {
                 currentImgIndex++;
             }
-            CheckFinishALoop();
-            CheckFinishARound();
             if (FileInfoConst.mouseDownIndexList.Contains(currentImgIndex))
             {
                 isMouseDownIndex = true;
-                dragCount++;
             }
             else
             {
@@ -322,13 +337,11 @@ namespace AutoClick_FirstBlood
             if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex) == false)
             {
                 currentImgIndex++;
-                aTimer.Interval = FileInfoConst.clickInterval;
                 repeatCycleIndex = 0;
             }
             else
             {
                 isRepeatImgClicked = true;
-                aTimer.Interval = FileInfoConst.clickIntervalForRepeat;
                 repeatCycleIfNecessary();
             }
         }
@@ -347,7 +360,7 @@ namespace AutoClick_FirstBlood
 
         public void repeatCycleIfNecessary()
         {
-            if (repeatCycleIndex > timeoutClickCount || dragCount >= FileInfoConst.timeoutDragCount)
+            if (repeatCycleIndex > timeoutClickCount)
             {
                 if (FileInfoConst.longTimeImgIndexList.Contains(currentImgIndex))
                 {
@@ -380,7 +393,8 @@ namespace AutoClick_FirstBlood
 
         public void CheckFinishARound()
         {
-            if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
+            if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count 
+                || dragCount >= FileInfoConst.timeoutDragCount)
             {
                 ResetARound();
                 //WriteResult(true);
@@ -389,12 +403,35 @@ namespace AutoClick_FirstBlood
                    !File.Exists(FileInfoConst.imgScreenFile) ||
                    !File.Exists(FileInfoConst.imgSubScreenList[currentImgIndex]))
             {
+                if (FileInfoConst.textAfterIndexList.ContainsKey(currentImgIndex)
+                    || currentImgIndex == FileInfoConst.expectedImgListIndex
+                    || FileInfoConst.mouseWheelDownIndexList.Contains(currentImgIndex))
+                {
+                    return;
+                }
                 currentImgIndex++;
                 if (currentImgIndex >= FileInfoConst.imgSubScreenList.Count)
                 {
                     ResetARound();
                     //WriteResult(true);
                 }
+            }
+        }
+
+        public void SetTimerClickInterval()
+        {
+            if (currentImgIndex == FileInfoConst.expectedImgListIndex
+                || FileInfoConst.mouseDownIndexList.Contains(currentImgIndex))
+            {
+                aTimer.Interval = FileInfoConst.clickInterval / 5;
+            }
+            else if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex))
+            {
+                aTimer.Interval = FileInfoConst.clickIntervalForRepeat;
+            }
+            else
+            {
+                aTimer.Interval = FileInfoConst.clickInterval;
             }
         }
 
@@ -501,6 +538,7 @@ namespace AutoClick_FirstBlood
             }
             if (posList.Count == 0)
             {
+                dragCount++;
                 int jumpTupleIndex = GetTupleIndexWithCurrentIndex(FileInfoConst.jumpIndexList, currentImgIndex - 1);
                 if (jumpTupleIndex != -1)
                 {
@@ -512,7 +550,10 @@ namespace AutoClick_FirstBlood
                     }
                 }
             }
-            aTimer.Start();
+            else
+            {
+                dragCount = 0;
+            }
         }
 
         public int GetTupleIndexWithCurrentIndex(List<Tuple<int, int, int>> tupleList, int index)
@@ -597,16 +638,19 @@ namespace AutoClick_FirstBlood
             posList.Clear();
         }
 
-        private void DoLeftMouseClick()
+        private void DoMouseHandle()
         {
             if (isMouseDownIndex)
             {
                 MyMouseEventHandle.DoLeftMouseDownWithPosition(ref posList);
+                return;
             }
-            else
+            if (isMouseWheelDownIndex)
             {
-                MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
+                MyMouseEventHandle.DoWheelDownMove();
+                return;
             }
+            MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
         }
 
         public Point ReadImgPosFile(string file)
@@ -643,7 +687,7 @@ namespace AutoClick_FirstBlood
             CaptureScreen(Screen.PrimaryScreen, FileInfoConst.imgScreenFile);
             ClearPositions();
             RecodeImgPosition();
-            DoLeftMouseClick();
+            DoMouseHandle();
         }
         #endregion Methods
     }

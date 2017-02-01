@@ -23,9 +23,10 @@ namespace AutoClick_FirstBlood
         public const int MOUSEEVENTF_MIDDLEDOWN = 0x0020;
         public const int MOUSEEVENTF_MIDDLEUP = 0x0040;
         public const int MOUSEEVENTF_ABSOLUTE = 0x8000;
+        public const int MOUSEEVENTF_WHEEL = 0x0800;
 
         [DllImport("user32.dll")]//, CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
-        public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
+        public static extern void mouse_event(int dwFlags, int dx, int dy, int cButtons, int dwExtraInfo);
         //public static void DoLeftMouseSingleClick()
         //{
         //    //Call the imported function with the cursor's current position
@@ -78,7 +79,7 @@ namespace AutoClick_FirstBlood
                 int Y = Cursor.Position.Y;
                 mouse_event(MOUSEEVENTF_LEFTDOWN
                         | MOUSEEVENTF_LEFTUP,
-                        (uint)X, (uint)Y, 0, 0);
+                        X, Y, 0, 0);
             }
         }
 
@@ -90,8 +91,13 @@ namespace AutoClick_FirstBlood
                 int X = Cursor.Position.X;
                 int Y = Cursor.Position.Y;
                 mouse_event(MOUSEEVENTF_LEFTDOWN,
-                        (uint)X, (uint)Y, 0, 0);
+                        X, Y, 0, 0);
             }
+        }
+
+        public static void DoWheelDownMove()
+        {
+            mouse_event(MOUSEEVENTF_WHEEL, 0, 0, -120, 0);
         }
     }
 }

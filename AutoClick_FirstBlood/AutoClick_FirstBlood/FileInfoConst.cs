@@ -26,6 +26,7 @@ namespace AutoClick_FirstBlood
         public static List<int> ignoreWhenLoopImgIndexList = new List<int>();
         public static Dictionary<int, string> textAfterIndexList = new Dictionary<int, string>();
         public static List<int> mouseDownIndexList = new List<int>();
+        public static List<int> mouseWheelDownIndexList = new List<int>();
         public static int expectedImgListIndex;
         public static List<string> expectedImgList = new List<string>();
         public static List<bool> checkedExpectedImgList = new List<bool>();
@@ -41,6 +42,7 @@ namespace AutoClick_FirstBlood
             IGNORE_WHEN_LOOP_IMG_INDEX_LIST,
             TEXT_AFTER_INDEX_LIST,
             MOUSE_DOWN_INDEX_LIST,
+            MOUSE_WHEEL_DOWN_INDEX_LIST,
             EXPECTED_IMG_LIST
         }
 
@@ -176,6 +178,12 @@ namespace AutoClick_FirstBlood
                         continue;
                     }
 
+                    if (line.Contains("mouseWheelDownIndexList ="))
+                    {
+                        indexListId = IndexList.MOUSE_WHEEL_DOWN_INDEX_LIST;
+                        continue;
+                    }
+
                     if (line.Contains("expectedImgListIndex ="))
                     {
                         string[] tmpArr = Regex.Split(line, "expectedImgListIndex =");
@@ -217,6 +225,9 @@ namespace AutoClick_FirstBlood
                             break;
                         case IndexList.MOUSE_DOWN_INDEX_LIST:
                             mouseDownIndexList.Add(Int32.Parse(line));
+                            break;
+                        case IndexList.MOUSE_WHEEL_DOWN_INDEX_LIST:
+                            mouseWheelDownIndexList.Add(Int32.Parse(line));
                             break;
                         case IndexList.EXPECTED_IMG_LIST:
                             expectedImgList.Add(line.Trim());
@@ -281,6 +292,11 @@ namespace AutoClick_FirstBlood
                     for (int i = 0; i < mouseDownIndexList.Count; i++)
                     {
                         sw.WriteLine(mouseDownIndexList[i]);
+                    }
+                    sw.WriteLine("mouseWheelDownIndexList = ");
+                    for (int i = 0; i < mouseWheelDownIndexList.Count; i++)
+                    {
+                        sw.WriteLine(mouseWheelDownIndexList[i]);
                     }
                     sw.WriteLine("expectedImgListIndex = " + expectedImgListIndex);
                     sw.WriteLine("expectedImgList = ");
