@@ -454,12 +454,13 @@ namespace AutoClick_FirstBlood
             try
             {
                 proc.Start();
-                Process[] pname = Process.GetProcessesByName("testOpencv1");
-                while (pname.Length > 0)
-                {
-                    Thread.Sleep(100);
-                    pname = Process.GetProcessesByName("testOpencv1");
-                }
+                proc.WaitForExit();
+                //Process[] pname = Process.GetProcessesByName("testOpencv1");
+                //while (pname.Length > 0)
+                //{
+                //    Thread.Sleep(100);
+                //    pname = Process.GetProcessesByName("testOpencv1");
+                //}
             }
             catch
             {
@@ -482,12 +483,13 @@ namespace AutoClick_FirstBlood
             try
             {
                 proc.Start();
-                Process[] pname = Process.GetProcessesByName("testOpencv1");
-                while (pname.Length > 0)
-                {
-                    Thread.Sleep(100);
-                    pname = Process.GetProcessesByName("testOpencv1");
-                }
+                proc.WaitForExit();
+                //Process[] pname = Process.GetProcessesByName("testOpencv1");
+                //while (pname.Length > 0)
+                //{
+                //    Thread.Sleep(100);
+                //    pname = Process.GetProcessesByName("testOpencv1");
+                //}
                 return true;
             }
             catch
@@ -662,7 +664,6 @@ namespace AutoClick_FirstBlood
                 return;
             }
             MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
-            MyMouseEventHandle.DoLeftMouseUp(); // for repeatImgClicked, for DoLeftMouseUpAndDownWithPostions
         }
 
         public Point ReadImgPosFile(string file)
