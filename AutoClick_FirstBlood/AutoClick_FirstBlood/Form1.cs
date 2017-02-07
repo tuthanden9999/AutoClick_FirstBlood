@@ -269,10 +269,10 @@ namespace AutoClick_FirstBlood
             }
             if (currentImgIndex == FileInfoConst.expectedImgListIndex)
             {
-                aTimer.Stop();
+                aTimer.Enabled = false;
                 currentImgIndex++;
                 CheckExpectedImgList();
-                aTimer.Start();
+                aTimer.Enabled = true;
                 return;
             }
             if (FileInfoConst.mouseWheelDownIndexList.Contains(currentImgIndex))
@@ -374,6 +374,8 @@ namespace AutoClick_FirstBlood
                     System.Threading.Thread.Sleep(500);
                     imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
                     posList.Add(imgPos);
+                    MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
+                    MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
                 }
                 ResetARound();
                 //WriteResult(false);
@@ -428,7 +430,7 @@ namespace AutoClick_FirstBlood
             if (currentImgIndex == FileInfoConst.expectedImgListIndex
                 || FileInfoConst.mouseDownIndexList.Contains(currentImgIndex))
             {
-                aTimer.Interval = FileInfoConst.clickInterval / 5;
+                aTimer.Interval = 2000;
             }
             else if (FileInfoConst.repeatImgIndexList.Contains(currentImgIndex))
             {
