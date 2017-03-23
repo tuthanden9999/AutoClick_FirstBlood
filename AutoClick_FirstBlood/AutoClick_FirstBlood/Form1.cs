@@ -375,7 +375,6 @@ namespace AutoClick_FirstBlood
                     imgPos = ReadImgPosFile(FileInfoConst.imgPosFile);
                     posList.Add(imgPos);
                     MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
-                    MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
                 }
                 ResetARound();
                 //WriteResult(false);
@@ -457,12 +456,6 @@ namespace AutoClick_FirstBlood
             {
                 proc.Start();
                 proc.WaitForExit();
-                //Process[] pname = Process.GetProcessesByName("testOpencv1");
-                //while (pname.Length > 0)
-                //{
-                //    Thread.Sleep(100);
-                //    pname = Process.GetProcessesByName("testOpencv1");
-                //}
             }
             catch
             {
@@ -486,12 +479,6 @@ namespace AutoClick_FirstBlood
             {
                 proc.Start();
                 proc.WaitForExit();
-                //Process[] pname = Process.GetProcessesByName("testOpencv1");
-                //while (pname.Length > 0)
-                //{
-                //    Thread.Sleep(100);
-                //    pname = Process.GetProcessesByName("testOpencv1");
-                //}
                 return true;
             }
             catch
@@ -657,12 +644,6 @@ namespace AutoClick_FirstBlood
             if (isMouseWheelDownIndex)
             {
                 MyMouseEventHandle.DoWheelDownMove();
-                return;
-            }
-            if (isRepeatImgClicked)
-            {
-                MyMouseEventHandle.DoLeftMouseUp();
-                MyMouseEventHandle.DoLeftMouseDownWithPosition(ref posList);
                 return;
             }
             MyMouseEventHandle.DoLeftMouseSingleClickWithPostions(ref posList);
