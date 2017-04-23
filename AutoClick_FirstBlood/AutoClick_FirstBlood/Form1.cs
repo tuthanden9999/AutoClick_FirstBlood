@@ -680,10 +680,14 @@ namespace AutoClick_FirstBlood
 
         private void RunAutoForImg()
         {
+            aTimer.Enabled = false;
+            
             CaptureScreen(Screen.PrimaryScreen, FileInfoConst.imgScreenFile);
             ClearPositions();
             RecodeImgPosition();
             DoMouseHandle();
+
+            aTimer.Enabled = true;
         }
         #endregion Methods
     }
